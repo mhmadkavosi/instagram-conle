@@ -1,10 +1,9 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import { getUser } from "../controllers/user";
 const route = Router();
 
 export default (app: Router) => {
     app.use('/users', route);
 
-    route.get('/me', (req: Request, res: Response) => {
-        return res.json({ user: 'user' }).status(200);
-    });
+    route.get('/me', getUser);
 };

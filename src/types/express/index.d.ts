@@ -1,10 +1,11 @@
 import { Document, Model } from 'mongoose';
-import { IUser } from '@/interfaces/IUser';
+import { IUser } from '@/models/interfaces/IUser';
 
 
 
 declare global {
     namespace Express {
+        // this is for middleware 
         export interface Request {
             currentUser: IUser & Document;
         }
