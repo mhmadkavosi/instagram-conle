@@ -6,5 +6,4 @@ export default async () => {
         autoIndex: true,
         autoCreate: true
     });
-
 };
