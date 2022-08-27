@@ -3,27 +3,25 @@ import mongoose from 'mongoose';
 
 const User = new mongoose.Schema(
     {
-        name: {
+        username: {
             type: String,
             required: [true, 'Please enter a full name'],
             index: true,
         },
-
         email: {
             type: String,
             lowercase: true,
             unique: true,
             index: true,
         },
-
-        password: String,
-
-        salt: String,
-
-        role: {
-            type: String,
-            default: 'user',
-        },
+        profilePhoto: String,
+        saltedPassword: String,
+        fristName: String,
+        lastName: String,
+        bio: String,
+        lastIp: String,
+        followers: [{ type: mongoose.Types.ObjectId, ref: "User" }],
+        following: [{ type: mongoose.Types.ObjectId, ref: "User" }]
     },
     { timestamps: true },
 );
