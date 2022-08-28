@@ -1,15 +1,41 @@
 import mongoose from 'mongoose';
 
+export interface PostDocument extends mongoose.Document {
+    userId: string,
+    caption: string,
+    location: {
+        type: String,
+        coordinates: [Number],
+    },
+    imagesPath: [string],
+    comments: [{
+        _id: string,
+        content: string,
+    }],
+    replies: [{
+        commentId: string
+    }]
+    hashtags: [string],
+    likes: [number],
+    views: [number]
+}
 
-const Posts = new mongoose.Schema(
+
+const PostSchema = new mongoose.Schema(
     {
-        user_id: {
+        userId: {
             type: mongoose.Types.ObjectId,
             ref: 'User'
         },
         caption: String,
-        latitude: String,
-        longitude: String,
+        location: {
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point']
+            },
+            coordinates: [Number]
+        },
         imagesPath: {
             type: [String],
         },
@@ -26,10 +52,11 @@ const Posts = new mongoose.Schema(
 
             }
         ],
-        hashtags: {
+        hashtags: [{
             type: mongoose.Types.ObjectId,
             ref: 'Hashtags'
-        },
+        }],
+        // TODO : fix likes issue, check for counts and add just user id into arrays
         likes: [
             {
                 likeNumber: {
@@ -48,5 +75,6 @@ const Posts = new mongoose.Schema(
 }
 )
 
+const Post = mongoose.model<PostDocument>('Post', PostSchema)
 
-export default mongoose.model<mongoose.Document>('Posts', Posts)
+export default Post; 
