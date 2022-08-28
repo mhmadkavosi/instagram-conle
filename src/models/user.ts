@@ -1,7 +1,22 @@
-import { IUser } from '@/models/interfaces/IUser';
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
-const User = new mongoose.Schema(
+export interface UserDocument extends mongoose.Document {
+    _id: string;
+    username: string;
+    email: string;
+    profilePhoto: string,
+    password: string;
+    fristName: string,
+    lastName: string,
+    bio: string,
+    lastIp: string,
+    followers: [string],
+    following: [string],
+    comparePassword(candidatePassword: string): Promise<boolean>;
+}
+
+const UserSchema = new mongoose.Schema(
     {
         username: {
             type: String,
@@ -15,7 +30,7 @@ const User = new mongoose.Schema(
             index: true,
         },
         profilePhoto: String,
-        saltedPassword: String,
+        password: String,
         fristName: String,
         lastName: String,
         bio: String,
@@ -26,4 +41,32 @@ const User = new mongoose.Schema(
     { timestamps: true },
 );
 
-export default mongoose.model<IUser & mongoose.Document>('User', User);
+UserSchema.pre('save', async function (next) {
+    let user = this;
+
+    if (!user.isModified("password")) return next();
+
+    // Random additional data
+    const salt = await bcrypt.genSalt(10);
+
+    const hash = await bcrypt.hashSync(user.password, salt);
+
+    // Replace the password with the hash
+    user.password = hash;
+
+    return next();
+})
+
+
+// Used for logging in
+UserSchema.methods.comparePassword = async function (
+    candidatePassword: string
+) {
+    const user = this as UserDocument;
+
+    return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
+};
+
+
+const User = mongoose.model<UserDocument>('User', UserSchema);
+export default User;
