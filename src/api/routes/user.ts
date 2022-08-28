@@ -1,6 +1,6 @@
-import { createUser } from './../controllers/user';
+import { createUser, getUser } from './../controllers/user';
 import { Router } from 'express';
-import { getUser } from "../controllers/user";
+
 const route = Router();
 
 export default (app: Router) => {
