@@ -1,10 +1,22 @@
 import mongoose from 'mongoose';
 
+export interface HashtagsDocument extends mongoose.Document {
+    _id: string,
+    hashtag: string
+}
 
-const Hashtags = new mongoose.Schema(
+const HashtagsSchema = new mongoose.Schema(
     {
-        hashtag: String
+        hashtag: {
+            type: String,
+            unique: true
+        }
+    },
+    {
+        timestamps: true
     }
 )
 
-export default mongoose.model<mongoose.Document>('Hashtags', Hashtags)
+const HashTags = mongoose.model<HashtagsDocument>('Hashtags', HashtagsSchema);
+
+export default HashTags;
