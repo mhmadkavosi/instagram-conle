@@ -1,30 +1,30 @@
 import Post, { PostDocument } from './../models/post';
 
-import { DocumentDefinition, FilterQuery } from "mongoose";
+import { DocumentDefinition, FilterQuery, UpdateQuery, QueryOptions } from "mongoose";
 
 export class PostService {
 
-    public async getPosts(): Promise<any> {
-        try {
-            return await Post.find();
-        } catch (error) {
-            console.log(error)
-        }
+    public getPosts() {
+        return Post.find();
     }
 
-    public async getPost(query: FilterQuery<PostDocument>) {
-        return await Post.findOne(query).lean();
+    public getPost(query: FilterQuery<PostDocument>) {
+        return Post.findOne(query).lean();
     }
 
-    public async createPost(input: DocumentDefinition<PostDocument>) {
-        try {
-            return await Post.create(input);
-        } catch (error) {
-            console.log(error)
-        }
+    public createPost(input: DocumentDefinition<PostDocument>) {
+        return Post.create(input);
     }
 
-    // public async updatePost() { }
+    public updatePost(
+        query: FilterQuery<PostDocument>,
+        update: UpdateQuery<PostDocument>,
+        options?: QueryOptions
+    ) {
+        return Post.findOneAndUpdate(query, update, options)
+    }
 
-    // public async deletePost() { }
+    public deletePost(query: FilterQuery<PostDocument>) {
+        return Post.deleteOne(query);
+    }
 }
