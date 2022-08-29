@@ -34,7 +34,8 @@ export const getPost = async (req: Request, res: Response) => {
 
 export const createPost = async (req: Request, res: Response) => {
     try {
-        const data = postService.createPost(req.body)
+        // @ts-ignore
+        const data = postService.createPost({ userId: req.user._id }, req.body)
 
         res.json({
             message: true,
