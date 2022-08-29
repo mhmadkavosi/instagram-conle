@@ -2,6 +2,7 @@ import express from "express";
 import config from "@/config";
 import cors from "cors";
 import routes from '@/api';
+import deserializeUser from "@/api/middlewares/deserializeUser";
 
 export default ({ app }: { app: express.Application }) => {
     /**
@@ -22,6 +23,8 @@ export default ({ app }: { app: express.Application }) => {
     // Load API routes
     app.use(config.api.prefix, routes());
 
+    // get user from request
+    app.use(deserializeUser)
     /// catch 404 and forward to error handler
     //  TODO : Create Global Error Handler
     app.use((req, res, next) => {
