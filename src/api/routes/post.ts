@@ -1,4 +1,4 @@
-import { createPost, getPost, getPosts } from "../controllers/post";
+import { createPost, getPost, getPosts, likePost } from "../controllers/post";
 import { Router } from "express";
 import requiresUser from "../middlewares/requiresUser";
 
@@ -8,5 +8,5 @@ export default (app: Router) => {
     app.use('/posts', route);
 
     route.route('/').get(getPosts).post(requiresUser, createPost);
-    route.route('/:id').get(getPost);
+    route.route('/:id').get(getPost).post(requiresUser, likePost)
 }
