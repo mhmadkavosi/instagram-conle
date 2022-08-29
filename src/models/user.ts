@@ -35,8 +35,8 @@ const UserSchema = new mongoose.Schema(
         lastName: String,
         bio: String,
         lastIp: String,
-        followers: [{ type: mongoose.Types.ObjectId, ref: "User" }],
-        following: [{ type: mongoose.Types.ObjectId, ref: "User" }]
+        followers: [{ type: mongoose.Types.ObjectId, ref: "User", uniqe: true }],
+        following: [{ type: mongoose.Types.ObjectId, ref: "User", uniqe: true }]
     },
     { timestamps: true },
 );
@@ -67,6 +67,14 @@ UserSchema.methods.comparePassword = async function (
     return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
 };
 
+
+UserSchema.virtual('followingCount').get(function () {
+    return this.following.length;
+})
+
+UserSchema.virtual('followerCount').get(function () {
+    return this.followers.length;
+})
 
 const User = mongoose.model<UserDocument>('User', UserSchema);
 export default User;
