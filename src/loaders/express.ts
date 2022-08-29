@@ -20,11 +20,11 @@ export default ({ app }: { app: express.Application }) => {
     // Transforms the raw string of req.body into json
     app.use(express.json());
 
-    // Load API routes
-    app.use(config.api.prefix, routes());
-
     // get user from request
     app.use(deserializeUser)
+
+    // Load API routes
+    app.use(config.api.prefix, routes());
     /// catch 404 and forward to error handler
     //  TODO : Create Global Error Handler
     app.use((req, res, next) => {
