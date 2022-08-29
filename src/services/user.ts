@@ -1,24 +1,31 @@
 import { omit } from "lodash";
-import { DocumentDefinition, FilterQuery } from "mongoose";
+import { DocumentDefinition, FilterQuery, UpdateQuery, QueryOptions } from "mongoose";
 
 import User, { UserDocument } from "../models/user";
 
 export default class UserService {
-    public async findUsers(): Promise<any> {
-        const user = await User.find();
-        return user;
+    public findUsers() {
+        return User.find();
     }
 
-    public async findUser(query: FilterQuery<UserDocument>) {
-        return await User.findOne(query).lean();
+    public findUser(query: FilterQuery<UserDocument>) {
+        return User.findOne(query).lean();
     }
 
-    public async createUser(input: DocumentDefinition<UserDocument>) {
-        try {
-            return await User.create(input);
-        } catch (error) {
-            throw new Error(error);
-        }
+    public createUser(input: DocumentDefinition<UserDocument>) {
+        return User.create(input);
+    }
+
+    public updateUser(
+        query: FilterQuery<UserDocument>,
+        update: UpdateQuery<UserDocument>,
+        options?: QueryOptions
+    ) {
+        return User.findOneAndUpdate(query, update, options)
+    }
+
+    public deleteUser(query: FilterQuery<UserDocument>) {
+        return User.deleteOne(query);
     }
 
     public async validatePassword({
