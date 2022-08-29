@@ -56,17 +56,13 @@ const PostSchema = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: 'Hashtags'
         }],
-        // TODO : fix likes issue, check for counts and add just user id into arrays
         likes: [
             {
-                likeNumber: {
-                    type: Number,
-                    default: 0
-                },
-                user_id: {
+                userId: {
                     type: mongoose.Types.ObjectId,
-                    ref: 'User'
-                }
+                    ref: 'User',
+                    unique: true
+                },
             }
         ],
         views: Number,
@@ -74,6 +70,10 @@ const PostSchema = new mongoose.Schema(
     timestamps: true
 }
 )
+
+PostSchema.virtual('likeCount').get(function () {
+    return this.likes.length;
+})
 
 const Post = mongoose.model<PostDocument>('Post', PostSchema)
 
