@@ -4,14 +4,25 @@ import { Request, Response } from 'express';
 
 const userService = new UserService();
 
-export const getUser = async (req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response) => {
     try {
         const user = await userService.findUsers()
         return res.json({ user: user }).status(200);
     } catch (error) {
         res.json({
             error
-        }).status(400)
+        }).status(500)
+    }
+}
+
+export const getUser = async (req: Request, res: Response) => {
+    try {
+        const user = await userService.findUser({ _id: req.params.id })
+        return res.json({ user }).status(200)
+    } catch (error) {
+        res.json({
+            error
+        }).status(500)
     }
 }
 
