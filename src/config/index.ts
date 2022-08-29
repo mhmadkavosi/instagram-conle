@@ -19,4 +19,8 @@ export default {
   api: {
     prefix: '/api',
   },
+  saltWorkFactor: process.env.saltWorkFactor,
+  accessTokenTtl: process.env.accessTokenTtl,
+  refreshTokenTtl: process.env.refreshTokenTtl,
+  privateKey: process.env.privateKey
 }
