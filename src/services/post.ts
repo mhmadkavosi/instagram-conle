@@ -9,7 +9,7 @@ export class PostService {
             return await Post.find();
 
         } catch (error) {
-            console.log(error)
+            return error
         }
 
     }
@@ -18,7 +18,7 @@ export class PostService {
         try {
             return await Post.findOne(query).lean();
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -27,7 +27,7 @@ export class PostService {
             return await Post.create(input);
 
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -40,7 +40,7 @@ export class PostService {
             return await Post.findOneAndUpdate(query, update, options)
 
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -48,7 +48,7 @@ export class PostService {
         try {
             return await Post.deleteOne(query);
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 }

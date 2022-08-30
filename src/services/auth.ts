@@ -13,7 +13,7 @@ export default class AuthService {
 
             return session.toJSON();
         } catch (error) {
-            console.log(error);
+            return error
         }
     }
 
@@ -49,7 +49,7 @@ export default class AuthService {
 
             return accessToken;
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -57,7 +57,7 @@ export default class AuthService {
         try {
             return await Session.updateMany(query, update);
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -65,7 +65,7 @@ export default class AuthService {
         try {
             return await Session.find(query).lean();
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 

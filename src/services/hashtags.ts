@@ -9,7 +9,7 @@ export class HashTagsService {
         try {
             return await HashTags.find();
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -17,7 +17,7 @@ export class HashTagsService {
         try {
             return await HashTags.findOne(query).lean();
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -25,7 +25,7 @@ export class HashTagsService {
         try {
             return await HashTags.create(input)
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 

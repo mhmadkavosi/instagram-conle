@@ -9,7 +9,7 @@ export default class UserService {
             return await User.find();
 
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -18,7 +18,7 @@ export default class UserService {
             return await User.findOne(query).lean();
 
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -27,7 +27,7 @@ export default class UserService {
             return await User.create(input);
 
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -40,7 +40,7 @@ export default class UserService {
             return await User.findOneAndUpdate(query, update, options)
 
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -49,7 +49,7 @@ export default class UserService {
             return await User.deleteOne(query);
 
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -75,7 +75,7 @@ export default class UserService {
 
             return omit(user.toJSON(), "password");
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 }
