@@ -1,73 +1,72 @@
-import { LeanDocument, FilterQuery, UpdateQuery } from "mongoose";
+import { FilterQuery, UpdateQuery } from "mongoose";
 import config from "../config/index";
 import { get } from "lodash";
-import { UserDocument } from "../models/user";
 import Session, { SessionDocument } from "../models/auth";
 import { sign, decode } from "../utils/jwt";
 import UserService from '@/services/user';
 
-// : {
-//     user:
-//     | Omit<UserDocument, "password">
-//     | LeanDocument<Omit<UserDocument, "password">>;
-//     session:
-//     | Omit<SessionDocument, "password">
-//     | LeanDocument<Omit<SessionDocument, "password">>;
-// }
+export default class AuthService {
 
-export async function createSession(userId: string, userAgent: string) {
-    const session = await Session.create({ user: userId, userAgent });
+    public async createSession(userId: string, userAgent: string) {
+        try {
+            const session = await Session.create({ user: userId, userAgent });
 
-    return session.toJSON();
-}
+            return session.toJSON();
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
+    public createAccessToken({ user, session }) {
+        // Build and return the new access token
+        const accessToken = sign(
+            { ...user, session: session._id },
+            { expiresIn: '15m' } // 15 minutes
+        );
 
-export function createAccessToken({
-    user,
-    session,
-}) {
-    // Build and return the new access token
-    const accessToken = sign(
-        { ...user, session: session._id },
-        { expiresIn: '15m' } // 15 minutes
-    );
+        return accessToken;
+    }
 
-    return accessToken;
-}
+    public async reIssueAccessToken({ refreshToken, }: { refreshToken: string; }) {
+        try {
+            const getUser = new UserService().findUser;
+            // Decode the refresh token
+            const { decoded } = decode(refreshToken);
 
-export async function reIssueAccessToken({
-    refreshToken,
-}: {
-    refreshToken: string;
-}) {
-    const getUser = new UserService().findUser;
-    // Decode the refresh token
-    const { decoded } = decode(refreshToken);
+            if (!decoded || !get(decoded, "_id")) return false;
 
-    if (!decoded || !get(decoded, "_id")) return false;
+            // Get the session
+            const session = await Session.findById(get(decoded, "_id"));
 
-    // Get the session
-    const session = await Session.findById(get(decoded, "_id"));
+            // Make sure the session is still valid
+            if (!session || !session?.valid) return false;
 
-    // Make sure the session is still valid
-    if (!session || !session?.valid) return false;
+            const user = await getUser({ _id: session.user });
 
-    const user = await getUser({ _id: session.user });
+            if (!user) return false;
 
-    if (!user) return false;
+            const accessToken = this.createAccessToken({ user, session });
 
-    const accessToken = createAccessToken({ user, session });
+            return accessToken;
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
-    return accessToken;
-}
+    public async updateSession(query: FilterQuery<SessionDocument>, update: UpdateQuery<SessionDocument>) {
+        try {
+            return await Session.updateMany(query, update);
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
-export async function updateSession(
-    query: FilterQuery<SessionDocument>,
-    update: UpdateQuery<SessionDocument>
-) {
-    return Session.updateMany(query, update);
-}
+    public async findSessions(query: FilterQuery<SessionDocument>) {
+        try {
+            return await Session.find(query).lean();
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
-export async function findSessions(query: FilterQuery<SessionDocument>) {
-    return Session.find(query).lean();
 }
