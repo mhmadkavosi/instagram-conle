@@ -4,27 +4,51 @@ import { DocumentDefinition, FilterQuery, UpdateQuery, QueryOptions } from "mong
 
 export class PostService {
 
-    public getPosts() {
-        return Post.find();
+    public async getPosts() {
+        try {
+            return await Post.find();
+
+        } catch (error) {
+            console.log(error)
+        }
+
     }
 
-    public getPost(query: FilterQuery<PostDocument>) {
-        return Post.findOne(query).lean();
+    public async getPost(query: FilterQuery<PostDocument>) {
+        try {
+            return await Post.findOne(query).lean();
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    public createPost(input: DocumentDefinition<PostDocument>) {
-        return Post.create(input);
+    public async createPost(input: DocumentDefinition<PostDocument>) {
+        try {
+            return await Post.create(input);
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    public updatePost(
+    public async updatePost(
         query: FilterQuery<PostDocument>,
         update: UpdateQuery<PostDocument>,
         options?: QueryOptions
     ) {
-        return Post.findOneAndUpdate(query, update, options)
+        try {
+            return await Post.findOneAndUpdate(query, update, options)
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    public deletePost(query: FilterQuery<PostDocument>) {
-        return Post.deleteOne(query);
+    public async deletePost(query: FilterQuery<PostDocument>) {
+        try {
+            return await Post.deleteOne(query);
+        } catch (error) {
+            console.log(error)
+        }
     }
 }

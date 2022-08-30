@@ -4,28 +4,53 @@ import { DocumentDefinition, FilterQuery, UpdateQuery, QueryOptions } from "mong
 import User, { UserDocument } from "../models/user";
 
 export default class UserService {
-    public findUsers() {
-        return User.find();
+    public async findUsers() {
+        try {
+            return await User.find();
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    public findUser(query: FilterQuery<UserDocument>) {
-        return User.findOne(query).lean();
+    public async findUser(query: FilterQuery<UserDocument>) {
+        try {
+            return await User.findOne(query).lean();
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    public createUser(input: DocumentDefinition<UserDocument>) {
-        return User.create(input);
+    public async createUser(input: DocumentDefinition<UserDocument>) {
+        try {
+            return await User.create(input);
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    public updateUser(
+    public async updateUser(
         query: FilterQuery<UserDocument>,
         update: UpdateQuery<UserDocument>,
         options?: QueryOptions
     ) {
-        return User.findOneAndUpdate(query, update, options)
+        try {
+            return await User.findOneAndUpdate(query, update, options)
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    public deleteUser(query: FilterQuery<UserDocument>) {
-        return User.deleteOne(query);
+    public async deleteUser(query: FilterQuery<UserDocument>) {
+        try {
+            return await User.deleteOne(query);
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     public async validatePassword({
@@ -35,18 +60,22 @@ export default class UserService {
         email: UserDocument["email"];
         password: string;
     }) {
-        const user = await User.findOne({ email });
+        try {
+            const user = await User.findOne({ email });
 
-        if (!user) {
-            return false;
+            if (!user) {
+                return false;
+            }
+
+            const isValid = await user.comparePassword(password);
+
+            if (!isValid) {
+                return false;
+            }
+
+            return omit(user.toJSON(), "password");
+        } catch (error) {
+            console.log(error)
         }
-
-        const isValid = await user.comparePassword(password);
-
-        if (!isValid) {
-            return false;
-        }
-
-        return omit(user.toJSON(), "password");
     }
 }

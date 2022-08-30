@@ -14,7 +14,11 @@ export class HashTagsService {
     }
 
     public async getHashtag(query: FilterQuery<HashtagsDocument>) {
-        return await HashTags.findOne(query).lean();
+        try {
+            return await HashTags.findOne(query).lean();
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     public async createHashtags(input: DocumentDefinition<HashtagsDocument>) {
