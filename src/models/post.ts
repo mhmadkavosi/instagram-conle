@@ -40,8 +40,11 @@ const PostSchema = new mongoose.Schema(
             type: [String],
         },
         comments: [{
-            _id: mongoose.Types.ObjectId,
-            content: String
+            userId: {
+                type: mongoose.Types.ObjectId,
+                ref: 'User'
+            },
+            content: String,
         }],
         replies: [
             {
@@ -49,7 +52,11 @@ const PostSchema = new mongoose.Schema(
                     type: mongoose.Types.ObjectId,
                     ref: 'comments'
                 },
-
+                userId: {
+                    type: mongoose.Types.ObjectId,
+                    ref: 'User'
+                },
+                content: String
             }
         ],
         hashtags: [{

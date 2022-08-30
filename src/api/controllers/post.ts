@@ -57,15 +57,59 @@ export const createPost = async (req: Request, res: Response) => {
 export const likePost = async (req: Request, res: Response) => {
     try {
         const userId = req.user._id;
-        console.log(userId)
         const post = await postService.getPost({ _id: req.params.id });
 
         const updateLike = await postService.updatePost({ _id: post._id }, { $set: { likes: { userId } } })
 
-        return res.json({
+        res.json({
             message: true,
             updateLike
         }).status(200)
+
+    } catch (error) {
+        res.json({
+            error
+        }).status(500)
+    }
+}
+
+export const commentOnPost = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user._id;
+
+        const post = await postService.getPost({ _id: req.params.id })
+
+        const addComment = await postService.updatePost({
+            _id: post._id
+        }, { $set: { comments: { content: req.body.comment, userId: userId } } })
+
+        res.json({
+            message: true,
+            addComment
+        })
+
+    } catch (error) {
+        res.json({
+            error
+        }).status(500)
+    }
+}
+
+export const replyComment = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user._id;
+        const post = await postService.getPost({ _id: req.params.id })
+        // TODO : check for comment in db if exsits reply to it
+
+
+        const addComment = await postService.updatePost({
+            _id: post._id
+        }, { $set: { replies: { commentId: req.params.commentId, content: req.body.comment, userId } } })
+
+        res.json({
+            message: true,
+            addComment
+        })
 
     } catch (error) {
         res.json({

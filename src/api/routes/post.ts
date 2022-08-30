@@ -1,4 +1,4 @@
-import { createPost, getPost, getPosts, likePost } from "../controllers/post";
+import { commentOnPost, createPost, getPost, getPosts, likePost, replyComment } from "../controllers/post";
 import { Router } from "express";
 import requiresUser from "../middlewares/requiresUser";
 
@@ -9,4 +9,6 @@ export default (app: Router) => {
 
     route.route('/').get(getPosts).post(requiresUser, createPost);
     route.route('/:id').get(getPost).post(requiresUser, likePost)
+    route.route("/:id/comment").post(requiresUser, commentOnPost);
+    route.route('/:id/reply/:commentId').post(requiresUser, replyComment);
 }
