@@ -46,7 +46,6 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const followUser = async (req: Request, res: Response) => {
     try {
-        // @ts-ignore
         const userId = req.user._id;
         const userWantToFollow = req.body.userId;
         const user = await userService.findUser({ _id: userId });
@@ -67,7 +66,6 @@ export const followUser = async (req: Request, res: Response) => {
 
 export const unfollowUser = async (req: Request, res: Response) => {
     try {
-        // @ts-ignore
         const userId = req.user._id;
         const userWantToFollow = req.body.userId;
         const user = await userService.findUser({ _id: userId });

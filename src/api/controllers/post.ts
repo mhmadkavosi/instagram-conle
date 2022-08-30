@@ -36,7 +36,6 @@ export const getPost = async (req: Request, res: Response) => {
 // TODO : make hashtags by destructuring in captions using only # signs
 export const createPost = async (req: Request, res: Response) => {
     try {
-        // @ts-ignore
         const userId = req.user._id;
         const body = req.body;
 
