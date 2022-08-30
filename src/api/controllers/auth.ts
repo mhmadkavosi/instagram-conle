@@ -1,13 +1,10 @@
+import AuthService from './../../services/auth';
 import UserService from '@/services/user';
 import { get } from "lodash";
 import { Request, Response } from "express";
-import {
-    createSession,
-    createAccessToken,
-    updateSession,
-    findSessions,
-} from "../../services/auth";
 import { sign } from "../../utils/jwt";
+
+const authService = new AuthService();
 
 export async function createUserSessionHandler(req: Request, res: Response) {
     // validate the email and password
@@ -20,10 +17,10 @@ export async function createUserSessionHandler(req: Request, res: Response) {
 
     console.log(req.user)
     // Create a session
-    const session = await createSession(user._id, req.get("user-agent") || "");
+    const session = await authService.createSession(user._id, req.get("user-agent") || "");
 
     // create access token
-    const accessToken = createAccessToken({
+    const accessToken = authService.createAccessToken({
         user,
         session,
     });
@@ -43,7 +40,7 @@ export async function invalidateUserSessionHandler(
 ) {
     const sessionId = get(req, "user.session");
 
-    await updateSession({ _id: sessionId }, { valid: false });
+    await authService.updateSession({ _id: sessionId }, { valid: false });
 
     return res.sendStatus(200);
 }
@@ -51,7 +48,7 @@ export async function invalidateUserSessionHandler(
 export async function getUserSessionsHandler(req: Request, res: Response) {
     const userId = get(req, "user._id");
 
-    const sessions = await findSessions({ user: userId, valid: true });
+    const sessions = await authService.findSessions({ user: userId, valid: true });
 
     return res.send(sessions);
 }

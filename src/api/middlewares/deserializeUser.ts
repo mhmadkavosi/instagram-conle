@@ -1,7 +1,9 @@
 import { get } from "lodash";
 import { Request, Response, NextFunction } from "express";
 import { decode } from "../../utils/jwt";
-import { reIssueAccessToken } from "../../services/auth";
+import AuthService from "../../services/auth";
+
+const authService = new AuthService();
 
 const deserializeUser = async (
     req: Request,
@@ -27,7 +29,7 @@ const deserializeUser = async (
     }
 
     if (expired && refreshToken) {
-        const newAccessToken = await reIssueAccessToken({ refreshToken });
+        const newAccessToken = await authService.reIssueAccessToken({ refreshToken });
 
         if (newAccessToken) {
             // Add the new access token to the response header
