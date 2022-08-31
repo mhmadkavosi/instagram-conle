@@ -14,14 +14,19 @@ export const getUsers = async (req: Request, res: Response) => {
     }
 }
 
-//  TODO : get user info 
 export const getUser = async (req: Request, res: Response) => {
     try {
-        const user = await userService.findUser({ _id: req.user._id })
+        // const user = await userService.findUser({ _id: req.user._id })
+        // return res.json({
+        //     user,
+        //     followersCount: user.followers.length,
+        //     followingCount: user.following.length
+        // }).status(200)
+        const user = await userService.userProfile(req.user._id);
+
+
         return res.json({
-            user,
-            followersCount: user.followers.length,
-            followingCount: user.following.length
+            user
         }).status(200)
     } catch (error) {
         res.json({
@@ -51,8 +56,8 @@ export const followUser = async (req: Request, res: Response) => {
         const user = await userService.findUser({ _id: userId });
 
 
-        const updateFollowing = await userService.updateUser({ _id: user._id }, { $set: { followers: userWantToFollow } })
-        const updateFollower = await userService.updateUser({ _id: userWantToFollow }, { $set: { following: userId } })
+        const updateFollowing = await userService.updateUser({ _id: user._id }, { $addToSet: { following: userWantToFollow } })
+        const updateFollower = await userService.updateUser({ _id: userWantToFollow }, { $addToSet: { followers: userId } })
 
         res.json({
             message: true,
@@ -70,8 +75,8 @@ export const unfollowUser = async (req: Request, res: Response) => {
         const userWantToFollow = req.body.userId;
         const user = await userService.findUser({ _id: userId });
 
-        const updateFollowing = await userService.updateUser({ _id: user._id }, { $unset: { followers: userWantToFollow } })
-        const updateFollower = await userService.updateUser({ _id: userWantToFollow }, { $unset: { following: userId } })
+        const updateFollowing = await userService.updateUser({ _id: user._id }, { $pull: { following: userWantToFollow } })
+        const updateFollower = await userService.updateUser({ _id: userWantToFollow }, { $pull: { followers: userId } })
 
         res.json({
             message: true,

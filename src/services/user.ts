@@ -1,4 +1,5 @@
 import { omit } from "lodash";
+import mongoose from "mongoose";
 import { DocumentDefinition, FilterQuery, UpdateQuery, QueryOptions } from "mongoose";
 
 import User, { UserDocument } from "../models/user";
@@ -78,4 +79,34 @@ export default class UserService {
             return error
         }
     }
+
+    public async userProfile(userId: string) {
+        try {
+            const data = await User.aggregate([
+                {
+                    $match: { _id: new mongoose.Types.ObjectId(userId) }
+                },
+                {
+                    $project: {
+                        username: 1,
+                        email: 1,
+                        profilePhoto: 1,
+                        bio: 1,
+                        followers: 1,
+                        followersCount: { $size: "$followers" },
+                        following: 1,
+                        followingCount: { $size: "$following" },
+                        fullName: {
+                            $concat: ["$fristName", " ", "$lastName"]
+                        },
+                    }
+                },
+            ])
+
+            return data;
+        } catch (error) {
+            return error
+        }
+    }
+
 }
