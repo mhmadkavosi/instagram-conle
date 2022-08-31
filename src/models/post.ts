@@ -72,7 +72,6 @@ const PostSchema = new mongoose.Schema(
                 },
             }
         ],
-        views: Number,
     }, {
     timestamps: true
 }
